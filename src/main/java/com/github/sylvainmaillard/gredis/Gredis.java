@@ -1,6 +1,5 @@
 package com.github.sylvainmaillard.gredis;
 
-import com.github.sylvainmaillard.gredis.gui.FXMLUtils;
 import com.github.sylvainmaillard.gredis.gui.LogComponent;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
@@ -19,10 +18,11 @@ import javafx.util.StringConverter;
 import redis.clients.jedis.Jedis;
 
 import java.net.URL;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static com.github.sylvainmaillard.gredis.Gredis.RedisSession.SessionState.*;
+import static com.github.sylvainmaillard.gredis.gui.FXMLUtils.getLabelsBundle;
+import static com.github.sylvainmaillard.gredis.gui.FXMLUtils.loadResource;
 
 public class Gredis extends Application implements Initializable {
 
@@ -47,12 +47,12 @@ public class Gredis extends Application implements Initializable {
     @Override
     public void start(Stage stage) {
         try {
-            ResourceBundle bundle = ResourceBundle.getBundle("gui.labels", Locale.getDefault());
-            FXMLLoader loader = new FXMLLoader(FXMLUtils.loadResource("Gredis.fxml"), bundle);
+            ResourceBundle bundle = getLabelsBundle();
+            FXMLLoader loader = new FXMLLoader(loadResource("Gredis.fxml"), bundle);
             AnchorPane root = loader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.getIcons().add(new Image(FXMLUtils.loadResource("gredis.png").openStream()));
+            stage.getIcons().add(new Image(loadResource("gredis.png").openStream()));
             stage.setTitle(bundle.getString("app.title"));
             stage.show();
         } catch (Exception e) {

@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.*?>
 
-<fx:root type="AnchorPane" xmlns="http://javafx.com/javafx"
-         xmlns:fx="http://javafx.com/fxml"
-         fx:controller="com.github.sylvainmaillard.gredis.gui.LogComponent">
-
-    <ScrollPane fx:id="logContainer" fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0"
-                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <TextFlow fx:id="logTextArea"/>
-    </ScrollPane>
+<fx:root type="HBox" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.sylvainmaillard.gredis.gui.LogComponent">
+      <ScrollPane fx:id="logContainer" fitToHeight="true" fitToWidth="true" prefHeight="100.0" prefWidth="250.0" HBox.hgrow="ALWAYS">
+          <TextFlow fx:id="logTextArea" />
+      </ScrollPane>
+      <ToolBar orientation="VERTICAL" prefHeight="100.0" prefWidth="53.0">
+          <Button mnemonicParsing="false" text="%log.clear" onAction="#clear"/>
+      </ToolBar>
 </fx:root>
