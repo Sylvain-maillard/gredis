@@ -2,10 +2,8 @@ package com.github.sylvainmaillard.gredis;
 
 import com.github.sylvainmaillard.gredis.gui.LogComponent;
 import javafx.application.Application;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -19,6 +17,7 @@ import redis.clients.jedis.Jedis;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import static com.github.sylvainmaillard.gredis.Gredis.RedisSession.SessionState.*;
 import static com.github.sylvainmaillard.gredis.gui.FXMLUtils.getLabelsBundle;
@@ -33,12 +32,14 @@ public class Gredis extends Application implements Initializable {
     public TitledPane connectionPane;
     public SplitPane contentSplitPane;
     public LogComponent log;
+    public ListView<String> keyList;
     private ResourceBundle bundle;
 
     private BooleanProperty connected = new SimpleBooleanProperty(false);
-    private StringProperty redisHost = new SimpleStringProperty("localhost");
-    private StringProperty redisPort = new SimpleStringProperty("6379");
+    private StringProperty redisHost = new SimpleStringProperty("NEIVE");
+    private StringProperty redisPort = new SimpleStringProperty("50301");
     private RedisSession redisSession;
+    private StringProperty auth = new SimpleStringProperty("jesuisunmotdepassecomplexe");
 
     public static void main(String[] args) {
         launch();
@@ -66,7 +67,7 @@ public class Gredis extends Application implements Initializable {
         // ouvre une connection.
         connected.setValue(true);
 
-        redisSession = new RedisSession(log, redisHost.get(), Integer.parseInt(redisPort.get()));
+        redisSession = new RedisSession(log, redisHost.get(), Integer.parseInt(redisPort.get()), auth.get());
         RedisSession.SessionState state = redisSession.connect();
         if (state == ERROR) {
             connected.setValue(false);
@@ -102,6 +103,7 @@ public class Gredis extends Application implements Initializable {
 
         hostTextBox.textProperty().bindBidirectional(this.redisHost);
         portTextBox.textProperty().bindBidirectional(this.redisPort);
+        authTextBox.textProperty().bindBidirectional(this.auth);
 
         connected.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -114,9 +116,31 @@ public class Gredis extends Application implements Initializable {
         });
     }
 
+    public void displayKeys(ActionEvent actionEvent) {
+        // bind la liste de clés sur la session:
+        this.keyList.itemsProperty().bindBidirectional(this.redisSession.keys);
+        // charge les clés
+        this.redisSession.keys();
+    }
+
     static class RedisSession {
 
         private final LogComponent log;
+        private final String auth;
+
+        private final ListProperty<String> keys = new SimpleListProperty<>();
+
+        public void keys() {
+            keys.clear();
+            log.logRequest("KEYS");
+            try {
+                Set<String> keys = jedis.keys("*");
+                log.logResponse("found " + keys.size() + " keys");
+                this.keys.setValue(FXCollections.observableArrayList(keys));
+            } catch (Exception e) {
+                log.logError(e);
+            }
+        }
 
         enum SessionState {
             NOT_CONNECTED,
@@ -127,8 +151,9 @@ public class Gredis extends Application implements Initializable {
         private final Jedis jedis;
         private SessionState state;
 
-        RedisSession(LogComponent log, String host, int port) {
+        RedisSession(LogComponent log, String host, int port, String auth) {
             this.log = log;
+            this.auth = auth;
             this.jedis = new Jedis(host, port);
             state = NOT_CONNECTED;
         }
@@ -138,6 +163,11 @@ public class Gredis extends Application implements Initializable {
             try {
                 jedis.connect();
                 log.logResponse("Connected");
+                if (this.auth != null && this.auth.length() > 0) {
+                    log.logRequest("AUTH", "*****");
+                    String response = jedis.auth(this.auth);
+                    log.logResponse(response);
+                }
                 state = CONNECTED;
             } catch (Exception e) {
                 log.logError(e);
