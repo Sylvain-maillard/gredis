@@ -1,5 +1,6 @@
 package com.github.sylvainmaillard.gredis.gui;
 
+import com.github.sylvainmaillard.gredis.application.LogService;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,6 +14,7 @@ import javafx.scene.text.TextFlow;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static com.github.sylvainmaillard.gredis.gui.FXMLUtils.loadDependency;
 import static com.github.sylvainmaillard.gredis.gui.FXMLUtils.loadFXMLResource;
 import static javafx.application.Platform.runLater;
 
@@ -20,12 +22,17 @@ public class LogComponent extends HBox implements Initializable {
     public ScrollPane logContainer;
     public TextFlow logTextArea;
 
+    private LogService logService;
+
     public LogComponent() {
        loadFXMLResource(this);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.logService = loadDependency(LogService.class);
+
+        logService.addNewLogsMessagesListener(this::log);
 
         logTextArea.getChildren().addListener(
                 (ListChangeListener<Node>) ((change) -> {
@@ -35,20 +42,22 @@ public class LogComponent extends HBox implements Initializable {
                 }));
     }
 
-    public void logRequest(String command, String... args) {
-        log(command + " (" + String.join(", ", args) + ")", LogStyle.REQUEST);
+    private void log(LogService.LogLine message) {
+        switch (message.getType()) {
+            case REQUEST:
+                log(message, LogStyle.REQUEST);
+                break;
+            case RESPONSE:
+                log(message, LogStyle.RESPONSE);
+                break;
+            case ERROR:
+                log(message, LogStyle.ERROR);
+                break;
+        }
     }
 
-    public void logResponse(String msg) {
-        log(msg, LogStyle.RESPONSE);
-    }
-
-    public void logError(Exception e) {
-        log(e.getMessage(), LogStyle.ERROR);
-    }
-
-    private void log(String msg, LogStyle style) {
-        runLater(() -> logTextArea.getChildren().add(style.getText(msg)));
+    private void log(LogService.LogLine msg, LogStyle style) {
+        runLater(() -> logTextArea.getChildren().add(style.getText(msg.toString())));
     }
 
     @FXML

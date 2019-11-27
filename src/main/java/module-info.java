@@ -1,5 +1,7 @@
 module gredis {
     uses com.github.sylvainmaillard.gredis.application.MainApplicationState;
+    uses com.github.sylvainmaillard.gredis.application.LogService;
+    provides com.github.sylvainmaillard.gredis.application.LogService with com.github.sylvainmaillard.gredis.application.LogService;
     provides com.github.sylvainmaillard.gredis.application.MainApplicationState with com.github.sylvainmaillard.gredis.application.MainApplicationState;
 
     requires javafx.controls;
