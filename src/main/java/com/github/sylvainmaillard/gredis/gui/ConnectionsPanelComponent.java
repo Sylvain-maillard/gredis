@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static com.github.sylvainmaillard.gredis.gui.FXMLUtils.loadDependency;
 import static com.github.sylvainmaillard.gredis.gui.FXMLUtils.loadFXMLResource;
 
 public class ConnectionsPanelComponent extends HBox implements Initializable {
@@ -23,6 +24,7 @@ public class ConnectionsPanelComponent extends HBox implements Initializable {
 
     public ConnectionsPanelComponent() {
         loadFXMLResource(this);
+        this.mainApplicationState = loadDependency(MainApplicationState.class);
     }
 
     public void connect() {

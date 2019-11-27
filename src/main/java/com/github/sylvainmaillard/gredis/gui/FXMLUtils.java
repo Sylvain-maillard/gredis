@@ -11,6 +11,7 @@ import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.ServiceLoader;
 
 import static java.util.Objects.requireNonNull;
 
@@ -29,9 +30,7 @@ public class FXMLUtils {
 
         if (node instanceof Node) {
             fxmlLoader.setRoot(node);
-            fxmlLoader.setControllerFactory(param -> {
-                return node;
-            });
+            fxmlLoader.setControllerFactory(param -> node);
         }
 
         try {
@@ -40,6 +39,11 @@ public class FXMLUtils {
             System.err.println(exception.getMessage());
             throw new RuntimeException(exception);
         }
+    }
+
+    public static <T> T loadDependency(Class<T> classOfDependency) {
+        ServiceLoader<T> serviceLoader = ServiceLoader.load(classOfDependency);
+        return serviceLoader.findFirst().orElseThrow();
     }
 
     private static InputStream loadResourceOpenStream(String classpath) {

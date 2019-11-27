@@ -94,23 +94,23 @@ public class Gredis extends Application implements Initializable {
             }
         });
 
-        authTextBox.disableProperty().bind(this.connected);
-        hostTextBox.disableProperty().bind(this.connected);
-        portTextBox.disableProperty().bind(this.connected);
-
-        hostTextBox.textProperty().bindBidirectional(this.redisHost);
-        portTextBox.textProperty().bindBidirectional(this.redisPort);
-        authTextBox.textProperty().bindBidirectional(this.auth);
-
-        connected.addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                connectBtn.setText(bundle.getString("connection.disconnect"));
-                connectBtn.setOnAction(this::disconnect);
-            } else {
-                connectBtn.setText(bundle.getString("connection.connect"));
-                connectBtn.setOnAction(this::connect);
-            }
-        });
+//        authTextBox.disableProperty().bind(this.connected);
+//        hostTextBox.disableProperty().bind(this.connected);
+//        portTextBox.disableProperty().bind(this.connected);
+//
+//        hostTextBox.textProperty().bindBidirectional(this.redisHost);
+//        portTextBox.textProperty().bindBidirectional(this.redisPort);
+//        authTextBox.textProperty().bindBidirectional(this.auth);
+//
+//        connected.addListener((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                connectBtn.setText(bundle.getString("connection.disconnect"));
+//                connectBtn.setOnAction(this::disconnect);
+//            } else {
+//                connectBtn.setText(bundle.getString("connection.connect"));
+//                connectBtn.setOnAction(this::connect);
+//            }
+//        });
     }
 
     public void displayKeys(ActionEvent actionEvent) {

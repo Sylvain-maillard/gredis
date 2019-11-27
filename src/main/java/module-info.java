@@ -1,4 +1,6 @@
 module gredis {
+    uses com.github.sylvainmaillard.gredis.application.MainApplicationState;
+    provides com.github.sylvainmaillard.gredis.application.MainApplicationState with com.github.sylvainmaillard.gredis.application.MainApplicationState;
 
     requires javafx.controls;
     requires javafx.fxml;
