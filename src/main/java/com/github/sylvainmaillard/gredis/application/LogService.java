@@ -27,8 +27,10 @@ public class LogService {
 
     public void addNewLogsMessagesListener(NewLogMessageListener messageListener) {
         logMessages.addListener((ListChangeListener<LogLine>) c -> {
-            if (c.wasAdded()) {
-                c.getAddedSubList().forEach(messageListener::onNewMessage);
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    c.getAddedSubList().forEach(messageListener::onNewMessage);
+                }
             }
         });
     }
@@ -52,7 +54,7 @@ public class LogService {
     public static class ErrorLine extends LogLine {
         private final Exception exception;
 
-        public ErrorLine(Exception exception) {
+        ErrorLine(Exception exception) {
             super(LogType.ERROR);
             this.exception = exception;
         }
@@ -65,7 +67,7 @@ public class LogService {
         private final String request;
         private final String[] args;
 
-        public RequestLine(String request, String...args) {
+        RequestLine(String request, String... args) {
             super(LogType.REQUEST);
 
             this.request = request;
@@ -79,7 +81,7 @@ public class LogService {
     public static class ResponseLine extends LogLine {
         private final String response;
 
-        public ResponseLine(String response) {
+        ResponseLine(String response) {
             super(LogType.RESPONSE);
             this.response = response;
         }

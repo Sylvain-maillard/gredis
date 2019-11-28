@@ -9,9 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URL;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.ServiceLoader;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
 
@@ -41,9 +40,10 @@ public class FXMLUtils {
         }
     }
 
+    private static Map<Class<?>, Object> SERVICES = new ConcurrentHashMap<>();
+
     public static <T> T loadDependency(Class<T> classOfDependency) {
-        ServiceLoader<T> serviceLoader = ServiceLoader.load(classOfDependency);
-        return serviceLoader.findFirst().orElseThrow();
+        return classOfDependency.cast(SERVICES.computeIfAbsent(classOfDependency, aClass -> ServiceLoader.load(classOfDependency).findFirst().orElseThrow()));
     }
 
     private static InputStream loadResourceOpenStream(String classpath) {
