@@ -1,6 +1,6 @@
 package com.github.sylvainmaillard.gredis;
 
-import com.github.sylvainmaillard.gredis.application.MainApplicationState;
+import com.github.sylvainmaillard.gredis.application.ConnectionService;
 import com.github.sylvainmaillard.gredis.gui.LogComponent;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -14,6 +14,7 @@ import javafx.util.StringConverter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static com.github.sylvainmaillard.gredis.ServicesLocator.loadDependency;
 import static com.github.sylvainmaillard.gredis.gui.FXMLUtils.*;
 
 public class Gredis extends Application implements Initializable {
@@ -28,7 +29,7 @@ public class Gredis extends Application implements Initializable {
     public ListView<String> keyList;
     private ResourceBundle bundle;
 
-    private MainApplicationState mainApplicationState;
+    private ConnectionService connectionService;
 
 
     public static void main(String[] args) {
@@ -58,14 +59,14 @@ public class Gredis extends Application implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
-        this.mainApplicationState = loadDependency(MainApplicationState.class);
+        this.connectionService = loadDependency(ConnectionService.class);
 
-        connectionPane.visibleProperty().bind(this.mainApplicationState.connected);
+        connectionPane.visibleProperty().bind(this.connectionService.connected);
 
-        connectionPane.textProperty().bindBidirectional(this.mainApplicationState.connected, new StringConverter<Boolean>() {
+        connectionPane.textProperty().bindBidirectional(this.connectionService.connected, new StringConverter<>() {
             @Override
             public String toString(Boolean aBoolean) {
-                return bundle.getString("connected.title") + " tcp://" + mainApplicationState.redisHost.get() + ":" + mainApplicationState.redisPort.get();
+                return bundle.getString("connected.title") + " tcp://" + connectionService.redisHost.get() + ":" + connectionService.redisPort.get();
             }
 
             @Override
@@ -77,8 +78,8 @@ public class Gredis extends Application implements Initializable {
 
     public void displayKeys(ActionEvent actionEvent) {
         // bind la liste de clés sur la session:
-        this.keyList.itemsProperty().bindBidirectional(this.mainApplicationState.redisSession.keysProperty());
+        this.keyList.itemsProperty().bindBidirectional(this.connectionService.redisSession.keysProperty());
         // charge les clés
-        this.mainApplicationState.redisSession.keys();
+        this.connectionService.redisSession.keys();
     }
 }

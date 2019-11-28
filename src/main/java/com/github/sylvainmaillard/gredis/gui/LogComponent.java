@@ -14,7 +14,7 @@ import javafx.scene.text.TextFlow;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static com.github.sylvainmaillard.gredis.gui.FXMLUtils.loadDependency;
+import static com.github.sylvainmaillard.gredis.ServicesLocator.loadDependency;
 import static com.github.sylvainmaillard.gredis.gui.FXMLUtils.loadFXMLResource;
 import static javafx.application.Platform.runLater;
 
