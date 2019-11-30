@@ -3,36 +3,53 @@ package com.github.sylvainmaillard.gredis.gui;
 import com.github.sylvainmaillard.gredis.domain.logs.LogLine;
 import com.github.sylvainmaillard.gredis.domain.logs.Logs;
 import javafx.collections.ListChangeListener;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import org.springframework.stereotype.Component;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.util.logging.Logger;
 
-import static com.github.sylvainmaillard.gredis.ServicesLocator.loadDependency;
-import static com.github.sylvainmaillard.gredis.gui.FXMLUtils.loadFXMLResource;
 import static javafx.application.Platform.runLater;
 
-public class LogComponent extends HBox implements Initializable {
+@Component
+public class LogView extends HBox {
+
     public ScrollPane logContainer;
     public TextFlow logTextArea;
 
-    private Logs logs;
+    private static final Logger logger = Logger.getLogger(LogView.class.getName());
+    private final Logs logs;
 
-    public LogComponent() {
-       loadFXMLResource(this);
+    public LogView(Logs logs) {
+        this.logs = logs;
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.logs = loadDependency(Logs.class);
+    @PostConstruct
+    public void init() {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setRoot(this);
+        loader.setLocation(FXMLUtils.loadResource(this));
+        loader.setResources(FXMLUtils.getLabelsBundle());
+        loader.setControllerFactory(param -> this);
+        loader.setClassLoader(this.getClass().getClassLoader());
 
+        try {
+            final Node root = loader.load();
+            assert root == this;
+        } catch (IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    public void initialize() {
         logs.addNewLogsMessagesListener(this::log);
 
         logTextArea.getChildren().addListener(
@@ -61,8 +78,7 @@ public class LogComponent extends HBox implements Initializable {
         runLater(() -> logTextArea.getChildren().add(style.getText(msg.toString())));
     }
 
-    @FXML
-    private void clear() {
+    public void clear(ActionEvent actionEvent) {
         runLater(() ->  logTextArea.getChildren().clear());
     }
 

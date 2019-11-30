@@ -1,10 +1,12 @@
-package com.github.sylvainmaillard.gredis.application;
+package com.github.sylvainmaillard.gredis.domain.logs;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import org.springframework.stereotype.Component;
 
-public class LogService {
+@Component
+public class Logs {
 
     private ObservableList<LogLine> logMessages = FXCollections.observableArrayList();
 
@@ -33,22 +35,6 @@ public class LogService {
                 }
             }
         });
-    }
-
-    public enum LogType {
-        REQUEST, RESPONSE, ERROR
-    }
-
-    public static abstract class LogLine {
-        final LogType type;
-
-        LogLine(LogType logType) {
-            this.type = logType;
-        }
-
-        public LogType getType() {
-            return type;
-        }
     }
 
     public static class ErrorLine extends LogLine {

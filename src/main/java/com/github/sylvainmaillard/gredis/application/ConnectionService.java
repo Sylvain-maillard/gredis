@@ -3,6 +3,7 @@ package com.github.sylvainmaillard.gredis.application;
 
 import com.github.sylvainmaillard.gredis.domain.RedisSession;
 import com.github.sylvainmaillard.gredis.domain.SessionState;
+import com.github.sylvainmaillard.gredis.domain.logs.Logs;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,7 +14,7 @@ import static com.github.sylvainmaillard.gredis.domain.SessionState.ERROR;
 
 public class ConnectionService {
 
-    private final LogService logService;
+    private final Logs logs;
     public BooleanProperty connected = new SimpleBooleanProperty(false);
     public StringProperty redisHost = new SimpleStringProperty("NEIVE");
     public StringProperty redisPort = new SimpleStringProperty("50301");
@@ -21,13 +22,13 @@ public class ConnectionService {
     public StringProperty auth = new SimpleStringProperty("jesuisunmotdepassecomplexe");
 
     public ConnectionService() {
-        this.logService = loadDependency(LogService.class);
+        this.logs = loadDependency(Logs.class);
     }
 
     public void connect() {
         this.connected.setValue(true);
 
-        this.redisSession = new RedisSession(logService, redisHost.get(), Integer.parseInt(redisPort.get()), auth.get());
+        this.redisSession = new RedisSession(logs, redisHost.get(), Integer.parseInt(redisPort.get()), auth.get());
         SessionState state = redisSession.connect();
         if (state == ERROR) {
             connected.setValue(false);

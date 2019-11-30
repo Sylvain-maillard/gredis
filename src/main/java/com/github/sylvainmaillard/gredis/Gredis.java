@@ -1,60 +1,100 @@
 package com.github.sylvainmaillard.gredis;
 
 import com.github.sylvainmaillard.gredis.application.ConnectionService;
+import com.github.sylvainmaillard.gredis.gui.FXMLUtils;
 import com.github.sylvainmaillard.gredis.gui.LogComponent;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.fxml.JavaFXBuilderFactory;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Builder;
+import javafx.util.BuilderFactory;
 import javafx.util.StringConverter;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import static com.github.sylvainmaillard.gredis.ServicesLocator.loadDependency;
 import static com.github.sylvainmaillard.gredis.gui.FXMLUtils.*;
 
+@SpringBootApplication
 public class Gredis extends Application implements Initializable {
+
+    private static final Logger logger = Logger.getLogger(Gredis.class.getName());
 
     public Button connectBtn;
     public PasswordField authTextBox;
     public TextField portTextBox;
     public TextField hostTextBox;
     public TitledPane connectionPane;
-    public SplitPane contentSplitPane;
     public LogComponent log;
     public ListView<String> keyList;
     private ResourceBundle bundle;
 
     private ConnectionService connectionService;
 
+    private ConfigurableApplicationContext springContext;
+    private Parent root;
 
-    public static void main(String[] args) {
-        launch();
+    private static class SpringBuilderFactory implements BuilderFactory {
+
+        private final JavaFXBuilderFactory delegate = new JavaFXBuilderFactory();
+        private final ConfigurableApplicationContext springContext;
+
+        public SpringBuilderFactory(ConfigurableApplicationContext springContext) {
+            this.springContext = springContext;
+        }
+
+        @Override
+        public Builder<?> getBuilder(Class<?> type) {
+            Builder<?> builder = delegate.getBuilder(type);
+            if (builder == null && !springContext.getBeansOfType(type).isEmpty()) {
+                return () -> springContext.getBean(type);
+            }
+            return builder;
+        }
+    }
+
+    @Override
+    public void init() throws Exception {
+        springContext = SpringApplication.run(Gredis.class);
+        FXMLLoader fxmlLoader = new FXMLLoader(FXMLUtils.loadResource(this), getLabelsBundle());
+        fxmlLoader.setControllerFactory(springContext::getBean);
+
+        fxmlLoader.setBuilderFactory(new SpringBuilderFactory(springContext));
+        root = fxmlLoader.load();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        springContext.stop();
+        logger.info("Stopped app");
     }
 
     @Override
     public void start(Stage stage) {
 
         try {
-            AnchorPane root = loadFXMLResource(this);
-
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.getIcons().add(loadImage("/assets/gredis.png"));
             stage.setTitle(fromBundle("app.title"));
             stage.show();
-
         } catch (Exception e) {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.show();
         }
     }
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -81,5 +121,9 @@ public class Gredis extends Application implements Initializable {
         this.keyList.itemsProperty().bindBidirectional(this.connectionService.redisSession.keysProperty());
         // charge les clés
         this.connectionService.redisSession.keys();
+    }
+
+    public static void main(String[] args) {
+        launch();
     }
 }

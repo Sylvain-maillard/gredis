@@ -60,11 +60,11 @@ public class FXMLUtils {
         return requireNonNull(resource, "Could not find resource " + classpath);
     }
 
-    private static ResourceBundle getLabelsBundle() {
+    public static ResourceBundle getLabelsBundle() {
         return ResourceBundle.getBundle("gui.labels", Locale.getDefault());
     }
 
-    private static URL loadResource(Object customComponent) {
+    public static URL loadResource(Object customComponent) {
         Class<?> componentClass = requireNonNull(customComponent).getClass();
         return loadResource("/" + componentClass.getPackageName().replace(".", "/") + "/" + componentClass.getSimpleName() + ".fxml");
     }
