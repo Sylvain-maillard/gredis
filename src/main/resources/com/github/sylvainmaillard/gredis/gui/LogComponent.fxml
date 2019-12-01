@@ -17,7 +17,11 @@
             </ScrollPane>
         </HBox>
     </center>
-    <top>
-        <Label styleClass="label-bright" text="%log.title" BorderPane.alignment="CENTER" />
-    </top>
+   <top>
+      <Pane styleClass="pane-header" BorderPane.alignment="CENTER">
+         <children>
+              <Label styleClass="label-bright" text="%log.title" />
+         </children>
+      </Pane>
+   </top>
 </BorderPane>
