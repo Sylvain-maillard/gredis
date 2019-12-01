@@ -16,6 +16,7 @@ module gredis {
     requires spring.boot.autoconfigure;
     requires spring.boot;
     requires spring.context;
+    requires spring.beans;
     requires java.annotation;
 
     opens com.github.sylvainmaillard.gredis.domain.logs to spring.beans;

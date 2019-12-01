@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.github.sylvainmaillard.gredis.gui.ConnectionsComponent">
+    <bottom>
+        <ToolBar prefHeight="40.0" prefWidth="585.0" BorderPane.alignment="CENTER">
+            <items>
+                <Button mnemonicParsing="false" text="%connections.add"/>
+                <Button mnemonicParsing="false" text="%connections.edit"/>
+                <Button mnemonicParsing="false" text="%connections.remove"/>
+            </items>
+        </ToolBar>
+    </bottom>
+    <center>
+        <TreeView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
+    </center>
+    <top>
+        <Label text="%connections.title" BorderPane.alignment="CENTER"/>
+    </top>
+</BorderPane>

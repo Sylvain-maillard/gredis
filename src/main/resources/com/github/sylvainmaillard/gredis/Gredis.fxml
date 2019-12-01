@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.github.sylvainmaillard.gredis.gui.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<SplitPane dividerPositions="0.7964824120603015" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
-  <items>
-    <AnchorPane fx:id="contentPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
-      <AnchorPane fx:id="logPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-          <LogView AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      </AnchorPane>
-  </items>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.BorderPane?>
+<SplitPane dividerPositions="0.7238095238095238" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+           minWidth="-Infinity" orientation="VERTICAL" prefHeight="422.0" prefWidth="659.0"
+           xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+    <SplitPane prefHeight="160.0" prefWidth="200.0">
+        <items>
+            <fx:include source="gui/ConnectionsListComponent.fxml"/>
+            <BorderPane prefHeight="200.0" prefWidth="200.0"/>
+        </items>
+    </SplitPane>
+    <fx:include source="gui/LogComponent.fxml"/>
 </SplitPane>

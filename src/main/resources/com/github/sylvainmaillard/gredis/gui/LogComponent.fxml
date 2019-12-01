@@ -4,11 +4,20 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<fx:root type="HBox" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.sylvainmaillard.gredis.gui.LogComponent">
-      <ScrollPane fx:id="logContainer" fitToHeight="true" fitToWidth="true" prefHeight="100.0" prefWidth="250.0" HBox.hgrow="ALWAYS">
-          <TextFlow fx:id="logTextArea" />
-      </ScrollPane>
-      <ToolBar orientation="VERTICAL" prefHeight="100.0" prefWidth="53.0">
-          <Button mnemonicParsing="false" text="%log.clear" onAction="#clear"/>
-      </ToolBar>
-</fx:root>
+<BorderPane xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.sylvainmaillard.gredis.gui.LogComponent">
+    <right>
+        <ToolBar orientation="VERTICAL" prefHeight="100.0" prefWidth="53.0" BorderPane.alignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#clear" text="%log.clear" />
+        </ToolBar>
+    </right>
+    <center>
+        <HBox BorderPane.alignment="CENTER">
+            <ScrollPane fx:id="logContainer" fitToHeight="true" fitToWidth="true" prefHeight="100.0" prefWidth="250.0" HBox.hgrow="ALWAYS">
+                <TextFlow fx:id="logTextArea" />
+            </ScrollPane>
+        </HBox>
+    </center>
+    <top>
+        <Label styleClass="label-bright" text="%log.title" BorderPane.alignment="CENTER" />
+    </top>
+</BorderPane>

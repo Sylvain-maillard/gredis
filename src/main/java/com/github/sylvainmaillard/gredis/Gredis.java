@@ -2,18 +2,14 @@ package com.github.sylvainmaillard.gredis;
 
 import com.github.sylvainmaillard.gredis.application.ConnectionService;
 import com.github.sylvainmaillard.gredis.gui.FXMLUtils;
-import com.github.sylvainmaillard.gredis.gui.LogComponent;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.util.Builder;
-import javafx.util.BuilderFactory;
 import javafx.util.StringConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,12 +27,7 @@ public class Gredis extends Application implements Initializable {
 
     private static final Logger logger = Logger.getLogger(Gredis.class.getName());
 
-    public Button connectBtn;
-    public PasswordField authTextBox;
-    public TextField portTextBox;
-    public TextField hostTextBox;
     public TitledPane connectionPane;
-    public LogComponent log;
     public ListView<String> keyList;
     private ResourceBundle bundle;
 
@@ -45,37 +36,16 @@ public class Gredis extends Application implements Initializable {
     private ConfigurableApplicationContext springContext;
     private Parent root;
 
-    private static class SpringBuilderFactory implements BuilderFactory {
-
-        private final JavaFXBuilderFactory delegate = new JavaFXBuilderFactory();
-        private final ConfigurableApplicationContext springContext;
-
-        public SpringBuilderFactory(ConfigurableApplicationContext springContext) {
-            this.springContext = springContext;
-        }
-
-        @Override
-        public Builder<?> getBuilder(Class<?> type) {
-            Builder<?> builder = delegate.getBuilder(type);
-            if (builder == null && !springContext.getBeansOfType(type).isEmpty()) {
-                return () -> springContext.getBean(type);
-            }
-            return builder;
-        }
-    }
-
     @Override
     public void init() throws Exception {
         springContext = SpringApplication.run(Gredis.class);
         FXMLLoader fxmlLoader = new FXMLLoader(FXMLUtils.loadResource(this), getLabelsBundle());
         fxmlLoader.setControllerFactory(springContext::getBean);
-
-        fxmlLoader.setBuilderFactory(new SpringBuilderFactory(springContext));
         root = fxmlLoader.load();
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop() {
         springContext.stop();
         logger.info("Stopped app");
     }
@@ -85,6 +55,8 @@ public class Gredis extends Application implements Initializable {
 
         try {
             Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/assets/gredis.css").toExternalForm());
+
             stage.setScene(scene);
             stage.getIcons().add(loadImage("/assets/gredis.png"));
             stage.setTitle(fromBundle("app.title"));
