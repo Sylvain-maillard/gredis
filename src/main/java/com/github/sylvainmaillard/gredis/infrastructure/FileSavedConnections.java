@@ -69,6 +69,7 @@ public class FileSavedConnections implements SavedConnections {
             }
             return savedConnection;
         });
+        saveToFile();
     }
 
     private Path configFilePath() {

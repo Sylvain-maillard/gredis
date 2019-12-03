@@ -49,4 +49,8 @@ public class SavedConnection {
     public String getAuth() {
         return auth;
     }
+
+    public String getUri() {
+        return this.uri.toString();
+    }
 }
