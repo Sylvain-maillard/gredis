@@ -61,6 +61,16 @@ public class FileSavedConnections implements SavedConnections {
         return booleanProperty;
     }
 
+    @Override
+    public void replace(SavedConnection oldConnection, SavedConnection newConnection) {
+        this.connections.replaceAll(savedConnection -> {
+            if(savedConnection.equals(oldConnection)) {
+                return newConnection;
+            }
+            return savedConnection;
+        });
+    }
+
     private Path configFilePath() {
         return Path.of(System.getProperty("user.home")).resolve(Path.of(GREDIS_CONNECTIONS_FILE));
     }

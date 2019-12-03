@@ -78,4 +78,11 @@ public class SavedConnectionDialog extends Dialog<SavedConnection> implements In
             }
         });
     }
+
+    public void prepareWith(SavedConnection selectedItem) {
+        this.name.setValue(selectedItem.getName());
+        this.host.setValue(selectedItem.getHost());
+        this.port.setValue(selectedItem.getPort());
+        this.auth.setValue(selectedItem.getAuth());
+    }
 }

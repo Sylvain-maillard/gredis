@@ -16,4 +16,5 @@ public interface SavedConnections {
 
     BooleanProperty emptynessProperty();
 
+    void replace(SavedConnection oldConnection, SavedConnection newConnection);
 }

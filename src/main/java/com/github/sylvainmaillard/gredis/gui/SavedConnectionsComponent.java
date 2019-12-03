@@ -37,7 +37,12 @@ public class SavedConnectionsComponent {
     }
 
     public void edit(ActionEvent actionEvent) {
-
+        SavedConnectionDialog dialog = new SavedConnectionDialog();
+        SavedConnection selectedItem = savedConnectionsListView.getSelectionModel().getSelectedItem();
+        dialog.prepareWith(selectedItem);
+        dialog.showAndWait().ifPresent(cnx -> {
+            savedConnections.replace(selectedItem, cnx);
+        });
     }
 
     public void remove(ActionEvent actionEvent) {
