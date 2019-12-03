@@ -27,6 +27,8 @@ public class FXMLUtils {
     public static <T> T loadFXMLResource(Object node) {
         FXMLLoader fxmlLoader = new FXMLLoader(loadResource(node), getLabelsBundle());
 
+        fxmlLoader.setClassLoader(FXMLUtils.class.getClassLoader());
+
         if (node instanceof Node) {
             fxmlLoader.setRoot(node);
             fxmlLoader.setControllerFactory(param -> node);
