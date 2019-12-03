@@ -1,6 +1,6 @@
 package com.github.sylvainmaillard.gredis.domain;
 
-import com.github.sylvainmaillard.gredis.application.LogService;
+import com.github.sylvainmaillard.gredis.domain.logs.Logs;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -12,7 +12,7 @@ import static com.github.sylvainmaillard.gredis.domain.SessionState.*;
 
 public class RedisSession {
 
-    private final LogService log;
+    private final Logs log;
     private final String auth;
 
     private final ListProperty<String> keys = new SimpleListProperty<>();
@@ -36,7 +36,7 @@ public class RedisSession {
     private final Jedis jedis;
     private SessionState state;
 
-    public RedisSession(LogService log, String host, int port, String auth) {
+    public RedisSession(Logs log, String host, int port, String auth) {
         this.log = log;
         this.auth = auth;
         this.jedis = new Jedis(host, port);

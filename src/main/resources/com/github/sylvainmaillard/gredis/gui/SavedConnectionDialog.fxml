@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root headerText="%connection.title" type="DialogPane" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.sylvainmaillard.gredis.gui.SavedConnectionDialog">
+            <content>
+                <GridPane hgap="10.0" vgap="5.0">
+                    <Label text="%connection.name" GridPane.rowIndex="1" />
+                    <TextField fx:id="nameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                    <Label text="%connection.host" GridPane.rowIndex="2" />
+                    <TextField fx:id="hostTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                    <Label text="%connection.port" GridPane.rowIndex="3" />
+                    <TextField fx:id="portTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                    <Label text="%connection.auth" GridPane.rowIndex="4" />
+                    <PasswordField fx:id="authTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                </GridPane>
+            </content>
+            <graphic>
+                <ImageView>
+                    <Image url="@link.png" />
+                </ImageView>
+            </graphic>
+            <ButtonType fx:constant="OK" />
+            <ButtonType fx:constant="CANCEL" />
+</fx:root>

@@ -27,6 +27,8 @@ public class FXMLUtils {
     public static <T> T loadFXMLResource(Object node) {
         FXMLLoader fxmlLoader = new FXMLLoader(loadResource(node), getLabelsBundle());
 
+        fxmlLoader.setClassLoader(FXMLUtils.class.getClassLoader());
+
         if (node instanceof Node) {
             fxmlLoader.setRoot(node);
             fxmlLoader.setControllerFactory(param -> node);
@@ -60,11 +62,11 @@ public class FXMLUtils {
         return requireNonNull(resource, "Could not find resource " + classpath);
     }
 
-    private static ResourceBundle getLabelsBundle() {
+    public static ResourceBundle getLabelsBundle() {
         return ResourceBundle.getBundle("gui.labels", Locale.getDefault());
     }
 
-    private static URL loadResource(Object customComponent) {
+    public static URL loadResource(Object customComponent) {
         Class<?> componentClass = requireNonNull(customComponent).getClass();
         return loadResource("/" + componentClass.getPackageName().replace(".", "/") + "/" + componentClass.getSimpleName() + ".fxml");
     }

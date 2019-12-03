@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<SplitPane dividerPositions="0.8062015503875969" orientation="VERTICAL" xmlns="http://javafx.com/javafx/10.0.2-internal"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.github.sylvainmaillard.gredis.gui.ActiveConnectionComponent">
+    <AnchorPane prefHeight="200.0" prefWidth="600.0"/>
+    <fx:include source="LogComponent.fxml"/>
+</SplitPane>

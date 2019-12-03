@@ -1,0 +1,12 @@
+.label-bright {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-opacity: 1;
+    -fx-padding: 10;
+}
+
+.pane-header {
+   -fx-background-color: #A2A2A2;
+}
