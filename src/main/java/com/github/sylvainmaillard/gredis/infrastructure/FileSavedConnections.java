@@ -4,26 +4,33 @@ import com.github.sylvainmaillard.gredis.domain.SavedConnection;
 import com.github.sylvainmaillard.gredis.domain.SavedConnections;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class FileSavedConnections implements SavedConnections {
 
     private static final String GREDIS_CONNECTIONS_FILE = ".gredis-connections.json";
 
-    private final List<SavedConnection> connections = new ArrayList<>();
+    private final ObservableList<SavedConnection> connections = FXCollections.observableArrayList();
+    private final BooleanProperty booleanProperty = new SimpleBooleanProperty();
 
     public FileSavedConnections() {
         if (configFilePath().toFile().exists()) {
             readFromFile();
         }
+        booleanProperty.setValue(connections.isEmpty());
+        connections.addListener((ListChangeListener<SavedConnection>) c -> booleanProperty.setValue(connections.isEmpty()));
     }
 
     @Override
@@ -45,8 +52,13 @@ public class FileSavedConnections implements SavedConnections {
     }
 
     @Override
-    public ObservableList<SavedConnection> savedConnectionsProperty() {
-        return null;
+    public ObjectProperty<ObservableList<SavedConnection>> savedConnectionsProperty() {
+        return new SimpleObjectProperty<>(new SimpleListProperty<>(this.connections));
+    }
+
+    @Override
+    public BooleanProperty emptynessProperty() {
+        return booleanProperty;
     }
 
     private Path configFilePath() {
@@ -58,7 +70,7 @@ public class FileSavedConnections implements SavedConnections {
             String json = Files.readString(configFilePath());
             Type listType = new TypeToken<List<SavedConnection>>() {
             }.getType();
-            this.connections.addAll(new Gson().fromJson(json, listType));
+            this.connections.addAll(FXCollections.observableList(new Gson().fromJson(json, listType)));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
