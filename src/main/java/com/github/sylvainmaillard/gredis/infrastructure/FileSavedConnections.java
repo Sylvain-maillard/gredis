@@ -4,9 +4,10 @@ import com.github.sylvainmaillard.gredis.domain.SavedConnection;
 import com.github.sylvainmaillard.gredis.domain.SavedConnections;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.springframework.stereotype.Component;
 
@@ -23,14 +24,16 @@ public class FileSavedConnections implements SavedConnections {
     private static final String GREDIS_CONNECTIONS_FILE = ".gredis-connections.json";
 
     private final ObservableList<SavedConnection> connections = FXCollections.observableArrayList();
-    private final BooleanProperty booleanProperty = new SimpleBooleanProperty();
 
     public FileSavedConnections() {
         if (configFilePath().toFile().exists()) {
             readFromFile();
         }
-        booleanProperty.setValue(connections.isEmpty());
-        connections.addListener((ListChangeListener<SavedConnection>) c -> booleanProperty.setValue(connections.isEmpty()));
+    }
+
+    @Override
+    public boolean doesNotContains(SavedConnection savedConnection) {
+        return !connections.contains(savedConnection);
     }
 
     @Override
@@ -54,11 +57,6 @@ public class FileSavedConnections implements SavedConnections {
     @Override
     public ObjectProperty<ObservableList<SavedConnection>> savedConnectionsProperty() {
         return new SimpleObjectProperty<>(new SimpleListProperty<>(this.connections));
-    }
-
-    @Override
-    public BooleanProperty emptynessProperty() {
-        return booleanProperty;
     }
 
     @Override

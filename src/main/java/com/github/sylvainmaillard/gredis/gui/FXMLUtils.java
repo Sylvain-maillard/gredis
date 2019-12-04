@@ -3,6 +3,7 @@ package com.github.sylvainmaillard.gredis.gui;
 import com.github.sylvainmaillard.gredis.Gredis;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 
 import java.io.IOException;
@@ -69,5 +70,10 @@ public class FXMLUtils {
     public static URL loadResource(Object customComponent) {
         Class<?> componentClass = requireNonNull(customComponent).getClass();
         return loadResource("/" + componentClass.getPackageName().replace(".", "/") + "/" + componentClass.getSimpleName() + ".fxml");
+    }
+
+    public static void alertError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, message);
+        alert.show();
     }
 }

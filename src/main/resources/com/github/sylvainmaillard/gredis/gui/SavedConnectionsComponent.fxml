@@ -10,6 +10,7 @@
                 <Button mnemonicParsing="false" onAction="#add" text="%connections.add" />
                 <Button mnemonicParsing="false" onAction="#edit" text="%connections.edit" />
                 <Button fx:id="removeButton" mnemonicParsing="false" onAction="#remove" text="%connections.remove" />
+                <Button mnemonicParsing="false" text="%connections.connect" />
             </items>
         </ToolBar>
     </bottom>

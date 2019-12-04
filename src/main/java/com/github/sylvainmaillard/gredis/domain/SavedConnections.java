@@ -1,6 +1,5 @@
 package com.github.sylvainmaillard.gredis.domain;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 
@@ -14,7 +13,7 @@ public interface SavedConnections {
 
     ObjectProperty<ObservableList<SavedConnection>> savedConnectionsProperty();
 
-    BooleanProperty emptynessProperty();
-
     void replace(SavedConnection oldConnection, SavedConnection newConnection);
+
+    boolean doesNotContains(SavedConnection savedConnection);
 }
