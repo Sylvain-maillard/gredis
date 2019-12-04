@@ -1,9 +1,5 @@
 module gredis {
 
-    uses com.github.sylvainmaillard.gredis.application.ConnectionService;
-
-    provides com.github.sylvainmaillard.gredis.application.ConnectionService with com.github.sylvainmaillard.gredis.application.ConnectionService;
-
     requires javafx.controls;
     requires javafx.fxml;
 

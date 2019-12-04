@@ -1,6 +1,5 @@
 package com.github.sylvainmaillard.gredis;
 
-import com.github.sylvainmaillard.gredis.application.ConnectionService;
 import com.github.sylvainmaillard.gredis.gui.FXMLUtils;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -8,9 +7,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TitledPane;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -19,7 +19,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-import static com.github.sylvainmaillard.gredis.ServicesLocator.loadDependency;
 import static com.github.sylvainmaillard.gredis.gui.FXMLUtils.*;
 
 @SpringBootApplication
@@ -30,8 +29,6 @@ public class Gredis extends Application implements Initializable {
     public TitledPane connectionPane;
     public ListView<String> keyList;
     private ResourceBundle bundle;
-
-    private ConnectionService connectionService;
 
     private ConfigurableApplicationContext springContext;
     private Parent root;
@@ -71,28 +68,26 @@ public class Gredis extends Application implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
-        this.connectionService = loadDependency(ConnectionService.class);
+//        connectionPane.visibleProperty().bind(this.connectionService.connected);
 
-        connectionPane.visibleProperty().bind(this.connectionService.connected);
-
-        connectionPane.textProperty().bindBidirectional(this.connectionService.connected, new StringConverter<>() {
-            @Override
-            public String toString(Boolean aBoolean) {
-                return bundle.getString("connected.title") + " tcp://" + connectionService.redisHost.get() + ":" + connectionService.redisPort.get();
-            }
-
-            @Override
-            public Boolean fromString(String s) {
-                return null;
-            }
-        });
+//        connectionPane.textProperty().bindBidirectional(this.connectionService.connected, new StringConverter<>() {
+//            @Override
+//            public String toString(Boolean aBoolean) {
+//                return bundle.getString("connected.title") + " tcp://" + connectionService.redisHost.get() + ":" + connectionService.redisPort.get();
+//            }
+//
+//            @Override
+//            public Boolean fromString(String s) {
+//                return null;
+//            }
+//        });
     }
 
     public void displayKeys(ActionEvent actionEvent) {
         // bind la liste de clés sur la session:
-        this.keyList.itemsProperty().bindBidirectional(this.connectionService.redisSession.keysProperty());
+//        this.keyList.itemsProperty().bindBidirectional(this.connectionService.redisSession.keysProperty());
         // charge les clés
-        this.connectionService.redisSession.keys();
+//        this.connectionService.redisSession.keys();
     }
 
     public static void main(String[] args) {

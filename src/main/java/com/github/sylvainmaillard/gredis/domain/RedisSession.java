@@ -2,18 +2,23 @@ package com.github.sylvainmaillard.gredis.domain;
 
 import com.github.sylvainmaillard.gredis.domain.logs.Logs;
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
 import java.util.Set;
 
 import static com.github.sylvainmaillard.gredis.domain.SessionState.*;
 
+@Component
 public class RedisSession {
 
     private final Logs log;
-    private final String auth;
+
+    private final ObjectProperty<SessionState> state = new SimpleObjectProperty<>();
 
     private final ListProperty<String> keys = new SimpleListProperty<>();
 
@@ -22,6 +27,7 @@ public class RedisSession {
     }
 
     public void keys() {
+        assert state.get() == CONNECTED;
         keys.clear();
         log.logRequest("KEYS");
         try {
@@ -33,38 +39,44 @@ public class RedisSession {
         }
     }
 
-    private final Jedis jedis;
-    private SessionState state;
+    private Jedis jedis;
 
-    public RedisSession(Logs log, String host, int port, String auth) {
+    public RedisSession(Logs log) {
         this.log = log;
-        this.auth = auth;
-        this.jedis = new Jedis(host, port);
-        state = NOT_CONNECTED;
+        state.setValue(NOT_CONNECTED);
     }
 
-    public SessionState connect() {
+    public SessionState connect(SavedConnection savedConnection) {
+        jedis = new Jedis(savedConnection.getUri());
         log.logRequest("Connect", jedis.getClient().getHost(), String.valueOf(jedis.getClient().getPort()));
         try {
             jedis.connect();
             log.logResponse("Connected");
-            if (this.auth != null && this.auth.length() > 0) {
+            if (savedConnection.hasAuth()) {
                 log.logRequest("AUTH", "*****");
-                String response = jedis.auth(this.auth);
+                String response = jedis.auth(savedConnection.getAuth());
                 log.logResponse(response);
             }
-            state = CONNECTED;
+            state.setValue(CONNECTED);
         } catch (Exception e) {
             log.logError(e);
-            state = ERROR;
+            state.setValue(ERROR);
         }
-        return state;
+        return state.get();
     }
 
     public void close() {
         log.logRequest("Close");
         jedis.close();
         log.logResponse("Disconnected");
-        state = NOT_CONNECTED;
+        state.setValue(NOT_CONNECTED);
+    }
+
+    public SessionState getState() {
+        return state.get();
+    }
+
+    public ObjectProperty<SessionState> stateProperty() {
+        return state;
     }
 }
